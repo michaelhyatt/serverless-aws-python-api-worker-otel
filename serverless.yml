@@ -7,6 +7,7 @@ package:
     - '!**'
     - 'handler.py'
     - 'collector.yaml'
+    - 'requirements.txt'
 
 provider:
   name: aws
@@ -37,8 +38,6 @@ functions:
       - http:
           method: post
           path: produce
-          cors: true
-
 
   consumer:
     handler: handler.consumer
@@ -50,7 +49,6 @@ functions:
       - http:
           method: get
           path: consume
-          cors: true
 
 plugins:
   - serverless-python-requirements
