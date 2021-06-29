@@ -1,14 +1,6 @@
-import json
 import logging
 import os
 import requests
-import json
-
-
-from aws_xray_sdk.core import xray_recorder
-from aws_xray_sdk.core import patch_all
-
-patch_all()
 
 
 logger = logging.getLogger()
