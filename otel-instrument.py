@@ -15,7 +15,7 @@ environ["_HANDLER"] = "otel_wrapper.lambda_handler"
 # config OTel
 environ["OTEL_TRACES_EXPORTER"] = "otlp_proto_grpc_span"
 
-# Setting W3C context propagation
+# Setting W3C context propagation - unable to receive them from lambda environment
 environ["OTEL_PROPAGATORS"] = "tracecontext"
 
 # set service name
