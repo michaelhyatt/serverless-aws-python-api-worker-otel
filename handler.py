@@ -1,7 +1,7 @@
 import logging
 import os
 import requests
-from opentelemetry import propagate, trace
+from opentelemetry import trace
 from opentelemetry.trace import SpanKind
 
 
@@ -65,6 +65,8 @@ def consumer(event, context):
 
 # Utility functions
 import typing
+from opentelemetry import propagate
+
 
 CarrierT = typing.TypeVar("CarrierT")
 
