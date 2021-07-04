@@ -11,7 +11,7 @@ logger.setLevel(logging.DEBUG)
 URL = os.getenv('CONSUMER_API')
 
 
-def producer(event, context):
+def producer(event, lambda_context):
 
     # Get trace context if exists. If not, create the request with fresh context
     context = get_trace_context(event=event)
@@ -42,7 +42,7 @@ def producer(event, context):
     return {'statusCode': res.status_code}
 
 
-def consumer(event, context):
+def consumer(event, lambda_context):
 
     # Get trace context sent from the other lambda
     context = get_trace_context(event=event)
