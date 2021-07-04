@@ -1,10 +1,9 @@
 import logging
 import os
 import requests
-
-
 from opentelemetry import propagate, trace
 from opentelemetry.trace import SpanKind
+
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
