@@ -25,6 +25,8 @@ def producer(event, lambda_context):
 
         logger.debug(f'Message: {event}')
 
+        time.sleep(0.5)
+
         # Create client span
         with tracer.start_as_current_span(name="producer-function-client", kind=SpanKind.CLIENT) as span:
             request_to_downstream = requests.Request(method="GET", url=URL, 
@@ -47,6 +49,8 @@ def producer(event, lambda_context):
 
             # Required for the caller to be recognised in service maps
             span.set_attribute("http.status_code", res.status_code)
+
+        time.sleep(0.3)
 
     return {'statusCode': res.status_code}
 
@@ -72,5 +76,7 @@ def consumer(event, lambda_context):
             logger.debug(f'Message: {event}')
 
             time.sleep(1)
+
+        time.sleep(0.5)
 
     return {'statusCode': 200}

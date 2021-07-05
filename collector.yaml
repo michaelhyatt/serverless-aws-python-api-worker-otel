@@ -15,7 +15,6 @@ exporters:
       # APM Server secret token
       Authorization: "Bearer ${APM_SERVER_TOKEN}"
 
-#enables output for traces to Elastic, metrics is not working ATM
 service:
   pipelines:
     traces:
