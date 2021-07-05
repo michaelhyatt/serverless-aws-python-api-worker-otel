@@ -26,11 +26,15 @@ def producer(event, lambda_context):
         logger.debug(f'Message: {event}')
 
         # Create client span
-        with tracer.start_as_current_span(name="producer-function-client", kind=SpanKind.CLIENT):
+        with tracer.start_as_current_span(name="producer-function-client", kind=SpanKind.CLIENT) as span:
             request_to_downstream = requests.Request(method="GET", url=URL, 
             headers={
                 "Content-Type": "application/json"
             })
+
+            # Required for the caller to be recognised in service maps
+            span.set_attribute("http.method", request_to_downstream.method)
+            span.set_attribute("http.url", request_to_downstream.url)
 
             # Inject the right trace header into the request
             inject(request_to_downstream.headers)
@@ -40,6 +44,9 @@ def producer(event, lambda_context):
             session = requests.Session()
 
             res = session.send(request_to_downstream.prepare())
+
+            # Required for the caller to be recognised in service maps
+            span.set_attribute("http.status_code", res.status_code)
 
     return {'statusCode': res.status_code}
 
