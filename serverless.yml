@@ -17,14 +17,17 @@ provider:
   stage: dev
   region: ${file(env.json):aws-region}
   environment:
+    # AWS_LAMBDA_EXEC_WRAPPER: /opt/otel-instrument
     AWS_LAMBDA_EXEC_WRAPPER: /var/task/otel-instrument.py
     OPENTELEMETRY_COLLECTOR_CONFIG_FILE: /var/task/collector.yaml
     APM_SERVER_URL: ${file(env.json):apm-server-url}
     APM_SERVER_TOKEN: ${file(env.json):apm-server-token}
 
-    # Not propagating properly
+    # Not working
     # OTEL_PROPAGATORS: tracecontext
 
+    # Disable requests autoinstrumentation to perform all manual otel instrumentation
+    OTEL_PYTHON_DISABLED_INSTRUMENTATIONS: "requests"
 
 functions:
   producer:
