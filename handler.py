@@ -34,12 +34,16 @@ def producer(event, lambda_context):
                 "Content-Type": "application/json"
             })
 
+            # AUtoinstrumentation takes care of the following, but
+            #  if it is turned off, inject the context into headers manually
+            #  and set few attributes to allow the service maps to detect the
+            #  direction of the call
+            #
             # Required for the caller to be recognised in service maps
-            span.set_attribute("http.method", request_to_downstream.method)
-            span.set_attribute("http.url", request_to_downstream.url)
-
+            # span.set_attribute("http.method", request_to_downstream.method)
+            # span.set_attribute("http.url", request_to_downstream.url)
             # Inject the right trace header into the request
-            inject(request_to_downstream.headers)
+            # inject(request_to_downstream.headers)
 
             logger.debug(f'Outbound headers: {request_to_downstream.headers}')
 
@@ -47,8 +51,9 @@ def producer(event, lambda_context):
 
             res = session.send(request_to_downstream.prepare())
 
+            # Only required if autoinstrumentation is switched off
             # Required for the caller to be recognised in service maps
-            span.set_attribute("http.status_code", res.status_code)
+            # span.set_attribute("http.status_code", res.status_code)
 
         time.sleep(0.3)
 
