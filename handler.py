@@ -1,7 +1,10 @@
 import logging
 import os
 import requests
+
+# Sleeps are not required there, they are only used to make traces look nice in Kibana
 import time
+
 from json import dumps
 
 from opentelemetry import trace
@@ -37,7 +40,7 @@ def producer(event, lambda_context):
             "Content-Type": "application/json"
         })
 
-        # AUtoinstrumentation takes care of the following, but
+        # Autoinstrumentation takes care of the following, but
         #  if it is turned off, inject the context into headers manually
         #  and set few attributes to allow the service maps to detect the
         #  direction of the call
