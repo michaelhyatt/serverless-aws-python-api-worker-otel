@@ -85,4 +85,8 @@ Status: 200
 ```
 
 ## Kibana APM should start showing traces.
+Note: locally generated transactions can get misaligned with transactions reported by Lambdas due to time differences between the two locations.
+![image](https://user-images.githubusercontent.com/15670925/125381630-9c055100-e3d7-11eb-9404-f2eb3b8ce9fb.png)
+![image](https://user-images.githubusercontent.com/15670925/125381702-b93a1f80-e3d7-11eb-893b-399aad2e35ea.png)
+
 
