@@ -25,7 +25,7 @@ def producer(event, lambda_context):
 
     tracer = trace.get_tracer(__name__)
 
-    # Create the top-level transaction representing the lqmbda work
+    # Create the top-level transaction representing the lambda work
     with tracer.start_as_current_span(name="producer-function-top-level", context=context, kind=SpanKind.SERVER):
 
         logger.debug(f'Message: {dumps(event)}')
