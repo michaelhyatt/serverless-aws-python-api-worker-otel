@@ -8,7 +8,7 @@ package:
     - 'handler.py'
     - 'collector.yaml'
     - 'requirements.txt'
-    - 'otel-instrument.py'
+    - otel_init.py
 
 provider:
   name: aws
@@ -16,37 +16,40 @@ provider:
   lambdaHashingVersion: '20201221'
   stage: dev
   region: ${file(env.json):aws-region}
+  tracing:
+    apiGateway: false
+    lambda: PassThrough
   environment:
-    OPENTELEMETRY_COLLECTOR_CONFIG_FILE: /var/task/collector.yaml
+    OPENTELEMETRY_COLLECTOR_CONFIG_FILE: "/var/task/collector.yaml"
     APM_SERVER_URL: ${file(env.json):apm-server-url}
     APM_SERVER_TOKEN: ${file(env.json):apm-server-token}
+    OTEL_PROPAGATORS: "tracecontext"
 
-    # Not working - https://github.com/aws-observability/aws-otel-lambda/issues/109
-    OTEL_PROPAGATORS: tracecontext
-    # Replacing the OOB wrapper with the one setting the propagators explicitly
-    # AWS_LAMBDA_EXEC_WRAPPER: /opt/otel-instrument
-    AWS_LAMBDA_EXEC_WRAPPER: /var/task/otel-instrument.py
-    # End of fix for #109
+    # Turn on sampling, if not sent from the caller. This can potentially create a very large amount of data.
+    OTEL_TRACES_SAMPLER: "Always_On"
 
     # Disable requests autoinstrumentation to perform all manual otel instrumentation
-    # OTEL_PYTHON_DISABLED_INSTRUMENTATIONS: "requests"
+    OTEL_PYTHON_DISABLED_INSTRUMENTATIONS: "requests"
 
 functions:
   producer:
     handler: handler.producer
     layers:
-      - arn:aws:lambda:${file(env.json):aws-region}:901920570463:layer:aws-otel-python38-ver-1-2-0:1
+      - arn:aws:lambda:${aws:region}:901920570463:layer:aws-otel-python38-ver-1-3-0:1
     environment:
-      CONSUMER_API: https://#{ApiGatewayRestApi}.execute-api.#{AWS::Region}.amazonaws.com/${self:provider.stage}/consume         
+      CONSUMER_API: https://#{ApiGatewayRestApi}.execute-api.${aws:region}.amazonaws.com/${self:provider.stage}/consume         
+      OTEL_SERVICE_NAME: ${self:functions.producer.handler}
     events:
       - http:
           method: post
           path: produce
 
   consumer:
-    handler: handler.consumer
+    handler: handler.consumer    
     layers:
-      - arn:aws:lambda:${file(env.json):aws-region}:901920570463:layer:aws-otel-python38-ver-1-2-0:1    
+      - arn:aws:lambda:${aws:region}:901920570463:layer:aws-otel-python38-ver-1-3-0:1    
+    environment:
+      OTEL_SERVICE_NAME: ${self:functions.consumer.handler}
     events:
       - http:
           method: get
