@@ -35,7 +35,7 @@ functions:
   producer:
     handler: handler.producer
     layers:
-      - arn:aws:lambda:${aws:region}:901920570463:layer:aws-otel-python38-ver-1-3-0:1
+      - arn:aws:lambda:${aws:region}:901920570463:layer:aws-otel-python38-ver-1-5-0:2
     environment:
       CONSUMER_API: https://#{ApiGatewayRestApi}.execute-api.${aws:region}.amazonaws.com/${self:provider.stage}/consume         
       OTEL_SERVICE_NAME: ${self:functions.producer.handler}
@@ -47,7 +47,7 @@ functions:
   consumer:
     handler: handler.consumer    
     layers:
-      - arn:aws:lambda:${aws:region}:901920570463:layer:aws-otel-python38-ver-1-3-0:1    
+      - arn:aws:lambda:${aws:region}:901920570463:layer:aws-otel-python38-ver-1-5-0:2    
     environment:
       OTEL_SERVICE_NAME: ${self:functions.consumer.handler}
     events:
